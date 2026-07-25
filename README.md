@@ -220,3 +220,384 @@ The current planned feature set is summarized below.
 > **Next Section:** **02 — System Architecture & Project Structure**
 >
 > This section defines the technical architecture, repository organization, frontend structure, backend responsibilities, component hierarchy and development philosophy.
+---
+
+# System Architecture
+
+DCODE is designed as a modular, scalable web application where each subsystem has a clearly defined responsibility.
+
+The project follows a **layered architecture**, allowing the frontend, backend, puzzle engine and administration tools to evolve independently without introducing unnecessary coupling.
+
+At a high level, the system can be represented as follows.
+
+```text
+                        ┌─────────────────────┐
+                        │     Visitor         │
+                        └──────────┬──────────┘
+                                   │
+                                   ▼
+                    ┌──────────────────────────┐
+                    │      Frontend (UI)       │
+                    │ HTML • CSS • JavaScript  │
+                    └──────────┬───────────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              ▼                ▼                ▼
+      Countdown Engine   Puzzle Engine    Visual Engine
+              │                │                │
+              └────────────────┼────────────────┘
+                               ▼
+                     Backend Application Layer
+                               │
+          ┌────────────────────┼─────────────────────┐
+          ▼                    ▼                     ▼
+   Authentication        Payment System       Admin System
+          │                    │                     │
+          └────────────────────┼─────────────────────┘
+                               ▼
+                          Primary Database
+                               │
+                               ▼
+                      Analytics & Event Logs
+```
+
+The frontend should never become responsible for business logic.
+
+Its responsibility is presentation only.
+
+The backend remains the single source of truth for every critical system.
+
+---
+
+# High-Level Components
+
+| Component | Responsibility |
+|------------|---------------|
+| Frontend | User interface and interaction |
+| Countdown Engine | Calculates and distributes the global countdown |
+| Puzzle Engine | Controls puzzle progression and validation |
+| Story Engine | Determines scheduled narrative changes |
+| Payment Engine | Extends the global timer after successful payments |
+| Decoder Verification | Confirms legitimate puzzle completion |
+| Hall of Fame | Stores verified decoder records |
+| Admin Dashboard | Internal moderation and management |
+| Analytics | Collects anonymous usage statistics |
+
+---
+
+# Architecture Principles
+
+The architecture follows several core principles.
+
+| Principle | Description |
+|-----------|-------------|
+| Separation of Concerns | Each subsystem owns one responsibility. |
+| Single Source of Truth | Countdown and puzzle states exist only on the backend. |
+| Server Authority | Clients never determine official game state. |
+| Scalability | Components should be independently expandable. |
+| Security | Sensitive logic never resides in public code. |
+| Modularity | Features should be replaceable without affecting unrelated systems. |
+
+---
+
+# Repository Structure
+
+Current repository layout.
+
+```text
+DCODE/
+│
+├── assets/
+│   ├── audio/
+│   ├── fonts/
+│   ├── icons/
+│   ├── images/
+│   └── videos/
+│
+├── css/
+│   ├── animations.css
+│   ├── components.css
+│   ├── globals.css
+│   ├── layout.css
+│   └── themes.css
+│
+├── js/
+│   ├── app.js
+│   ├── countdown.js
+│   ├── effects.js
+│   ├── navigation.js
+│   ├── puzzles.js
+│   ├── utilities.js
+│   └── ui.js
+│
+├── pages/
+│   ├── archive/
+│   ├── gateway/
+│   ├── logs/
+│   ├── signal/
+│   ├── transmission/
+│   └── hidden/
+│
+├── docs/
+│
+├── README.md
+│
+└── index.html
+```
+
+As development progresses, additional directories will be introduced for backend services, deployment scripts and operational tooling.
+
+---
+
+# Future Repository Layout
+
+```text
+DCODE/
+
+frontend/
+
+backend/
+
+database/
+
+payments/
+
+authentication/
+
+countdown/
+
+puzzles/
+
+analytics/
+
+deployment/
+
+admin/
+
+documentation/
+
+tests/
+
+monitoring/
+```
+
+Each major system should remain isolated from unrelated components.
+
+---
+
+# Frontend Responsibilities
+
+The frontend is responsible only for presentation.
+
+It should never contain authoritative game logic.
+
+Responsibilities include:
+
+- Rendering pages
+- Displaying the countdown
+- Displaying clues
+- Triggering animations
+- User navigation
+- Audio playback
+- Theme switching
+- Accessibility
+- Responsive layouts
+
+The frontend must never contain:
+
+- Final puzzle solutions
+- Decoder verification logic
+- Secret encryption keys
+- Administrative controls
+- Payment verification
+- Countdown authority
+
+---
+
+# Backend Responsibilities
+
+The backend acts as the authoritative game server.
+
+Responsibilities include:
+
+- Maintaining the official countdown
+- Synchronizing every connected client
+- Validating payments
+- Storing puzzle progress
+- Scheduling story events
+- Managing decoder verification
+- Recording Hall of Fame entries
+- Logging system events
+- Admin authentication
+- Rate limiting
+- Anti-abuse controls
+
+Every client should trust the backend—not other clients.
+
+---
+
+# Component Responsibilities
+
+## Countdown Engine
+
+Responsible for:
+
+- Global countdown calculation
+- Time synchronization
+- Countdown extension
+- Scheduled events
+- Timer persistence
+
+---
+
+## Puzzle Engine
+
+Responsible for:
+
+- Puzzle activation
+- Unlock conditions
+- Hint scheduling
+- Solution validation
+- Progression logic
+
+---
+
+## Story Engine
+
+Responsible for:
+
+- Daily messages
+- Environmental changes
+- Story progression
+- Event scheduling
+- Timed reveals
+
+---
+
+## Payment Engine
+
+Responsible for:
+
+- Payment verification
+- Timer extension
+- Contribution history
+- Fraud prevention
+- Transaction logging
+
+---
+
+## Decoder Engine
+
+Responsible for:
+
+- Final solution validation
+- Preventing duplicate claims
+- Recording solve timestamps
+- Granting temporary privileges
+- Unlocking reward delivery
+
+---
+
+# Data Flow
+
+The expected system flow is illustrated below.
+
+```text
+Visitor
+
+↓
+
+Loads Website
+
+↓
+
+Requests Countdown
+
+↓
+
+Backend Returns Official Countdown
+
+↓
+
+Visitor Explores
+
+↓
+
+Discovers Clues
+
+↓
+
+Attempts Puzzle
+
+↓
+
+Backend Validates
+
+↓
+
+If Incorrect
+
+↓
+
+Continue Investigation
+
+↓
+
+If Correct
+
+↓
+
+Unlock Next Stage
+```
+
+Every meaningful action should ultimately be verified by the backend.
+
+---
+
+# Client–Server Philosophy
+
+The client should be considered untrusted.
+
+Anything visible inside browser developer tools must be assumed discoverable.
+
+Therefore:
+
+✅ UI logic belongs in the browser.
+
+❌ Secret logic does not.
+
+Examples of client-side logic:
+
+- Animations
+- Theme changes
+- Audio controls
+- Visual glitches
+- Menu interactions
+
+Examples of server-side logic:
+
+- Master puzzle verification
+- Payment validation
+- Countdown authority
+- Decoder verification
+- Reward unlocking
+
+---
+
+# Design Philosophy
+
+DCODE should not feel like software.
+
+It should feel like discovering something that was never intended to be found.
+
+Every feature should answer one question before implementation:
+
+> **"Does this increase curiosity without giving away certainty?"**
+
+If the answer is **no**, the feature should be redesigned or removed.
+
+---
+
+> **Next Section:** **03 — Frontend Design System & User Experience**
+
+This section defines the visual language, UI components, responsive design, interaction principles, atmosphere, animations and accessibility standards used throughout DCODE.
