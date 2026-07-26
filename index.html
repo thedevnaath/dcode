@@ -2,31 +2,236 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>apophenia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SUNKCOST PROTOCOL</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        /* 1. DARK CYBERPUNK ATMOSPHERE & CRT VIGNETTE */
         body {
-            background-color: #000000;
-            color: #e0e0e0;
-            font-family: monospace;
+            background-color: #030303;
+            background-image: radial-gradient(circle at center, #0a0505 0%, #000000 90%);
+            color: #d0d0d0;
+            font-family: 'Courier New', Courier, monospace;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            min-height: 100vh;
+            text-align: center;
+            padding: 15px;
+            overflow: hidden;
+            position: relative;
         }
-        h1 {
-            color: #8b0000;
-            letter-spacing: 4px;
+
+        /* CRT Scanline Overlay */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 99;
+            background-size: 100% 3px, 6px 100%;
+            pointer-events: none;
+            opacity: 0.85;
         }
-        p {
-            opacity: 0.6;
+
+        /* Glitch Animation on Hover */
+        .glitch-title {
+            color: #a00000;
+            letter-spacing: clamp(3px, 1.5vw, 8px);
+            font-size: clamp(1.6rem, 5vw, 2.8rem);
+            margin-bottom: 8px;
+            font-weight: 900;
+            text-shadow: 0 0 12px rgba(160, 0, 0, 0.8), 0 0 25px rgba(139, 0, 0, 0.4);
+            position: relative;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .glitch-title:hover {
+            animation: glitch-anim 0.2s infinite;
+            color: #ff1a1a;
+        }
+
+        @keyframes glitch-anim {
+            0% { transform: translate(0) skew(0deg); text-shadow: -2px 0 #00ffff, 2px 0 #ff0055; }
+            20% { transform: translate(-2px, 2px) skew(-2deg); }
+            40% { transform: translate(-1px, -2px) skew(1deg); }
+            60% { transform: translate(2px, 1px) skew(-1deg); text-shadow: 2px 0 #00ffff, -2px 0 #ff0055; }
+            80% { transform: translate(1px, -1px) skew(2deg); }
+            100% { transform: translate(0) skew(0deg); }
+        }
+
+        .subtitle {
+            font-size: clamp(0.65rem, 2vw, 0.85rem);
+            opacity: 0.55;
+            margin-bottom: 35px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #888;
+        }
+
+        /* 2. MOBILE POLISH & RESPONSIVE GRID */
+        .timer-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: clamp(8px, 2vw, 16px);
+            width: 100%;
+            max-width: 550px;
+            padding: 0 5px;
+        }
+
+        .time-box {
+            background-color: rgba(12, 12, 12, 0.9);
+            border: 1px solid #1c1c1c;
+            border-top: 1px solid #2e1010;
+            padding: clamp(10px, 3vw, 20px) 5px;
+            border-radius: 3px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .number {
+            font-size: clamp(1.8rem, 6vw, 3.2rem);
+            font-weight: bold;
+            color: #f0f0f0;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            font-family: monospace;
+        }
+
+        .label {
+            font-size: clamp(0.55rem, 1.5vw, 0.7rem);
+            opacity: 0.4;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status {
+            margin-top: 45px;
+            font-size: clamp(0.65rem, 2vw, 0.8rem);
+            color: #7a0000;
+            letter-spacing: 1.5px;
+            transition: color 0.3s ease;
+        }
+
+        /* EASTER EGG VISUAL SHIFTS */
+        body.flash-red {
+            background-color: #300000 !important;
+            background-image: none !important;
         }
     </style>
 </head>
-<body>
-    <h1>SUNKCOST PROTOCOL</h1>
-    <p>IT HAS ALREADY BEGUN.</p>
+<body id="body-target">
+
+    <h1 class="glitch-title" id="main-title">SUNKCOST PROTOCOL</h1>
+    <div class="subtitle" id="sub-title">IT HAS ALREADY BEGUN. ONLY THE COUNTDOWN REMAINS.</div>
+
+    <div class="timer-container">
+        <div class="time-box"><div class="number" id="days">00</div><div class="label">Days</div></div>
+        <div class="time-box"><div class="number" id="hours">00</div><div class="label">Hours</div></div>
+        <div class="time-box"><div class="number" id="minutes">00</div><div class="label">Minutes</div></div>
+        <div class="time-box"><div class="number" id="seconds">00</div><div class="label">Seconds</div></div>
+    </div>
+
+    <div class="status" id="status-text">SYNCHRONIZING WITH SYSTEM CLOCK...</div>
+
+    <script>
+        let targetTime = 0;
+        let timeOffset = 0;
+
+        // API Sync Function
+        async function initTimer() {
+            try {
+                const res = await fetch('/api/time');
+                const data = await res.json();
+                
+                targetTime = data.targetTimestamp;
+                timeOffset = data.serverTime - Date.now();
+                
+                document.getElementById('status-text').innerText = "SYSTEM SYNCHRONIZED // NETWORK LIVE";
+                updateTimer();
+                setInterval(updateTimer, 1000);
+            } catch (err) {
+                document.getElementById('status-text').innerText = "SIGNAL LOSS - OFFLINE";
+            }
+        }
+
+        function updateTimer() {
+            if (!targetTime) return;
+
+            const now = Date.now() + timeOffset;
+            const diff = targetTime - now;
+
+            if (diff <= 0) {
+                document.getElementById('days').innerText = "00";
+                document.getElementById('hours').innerText = "00";
+                document.getElementById('minutes').innerText = "00";
+                document.getElementById('seconds').innerText = "00";
+                document.getElementById('status-text').innerText = "NULL STATE REACHED.";
+                return;
+            }
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = String(d).padStart(2, '0');
+            document.getElementById('hours').innerText = String(h).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(m).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(s).padStart(2, '0');
+        }
+
+        initTimer();
+
+        // 3. EASTER EGG KEYSTROKE LISTENER
+        let inputBuffer = "";
+        const secrets = {
+            "TRUTH": () => triggerEasterEgg("TRUTH DETECTED: THERE IS NO ESCAPE", true),
+            "GATE": () => triggerEasterEgg("GATEWAY OPENING // LOGS UNLOCKED", false),
+            "WAKE": () => triggerEasterEgg("YOU CANNOT WAKE UP", true)
+        };
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
+                inputBuffer += e.key.toUpperCase();
+                if (inputBuffer.length > 10) {
+                    inputBuffer = inputBuffer.substring(inputBuffer.length - 10);
+                }
+                
+                for (let code in secrets) {
+                    if (inputBuffer.endsWith(code)) {
+                        secrets[code]();
+                        inputBuffer = "";
+                    }
+                }
+            }
+        });
+
+        function triggerEasterEgg(message, flashEffect) {
+            const statusEl = document.getElementById('status-text');
+            const originalText = statusEl.innerText;
+            statusEl.innerText = message;
+            statusEl.style.color = "#ff1a1a";
+
+            if (flashEffect) {
+                document.body.classList.add('flash-red');
+                setTimeout(() => document.body.classList.remove('flash-red'), 300);
+            }
+
+            setTimeout(() => {
+                statusEl.innerText = originalText;
+                statusEl.style.color = "#7a0000";
+            }, 4000);
+        }
+    </script>
 </body>
 </html>
