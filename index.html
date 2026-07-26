@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>apophenia</title>
+    <title>SUNKCOST PROTOCOL</title>
+    
+    <!-- =======================================================
+         STYLING (CSS) - ALL VISUAL DESIGN & ANIMATIONS
+         ======================================================= -->
     <style>
         * {
             box-sizing: border-box;
@@ -12,7 +16,7 @@
             user-select: none;
         }
 
-        /* 1. DARK CYBERPUNK ATMOSPHERE & CRT VIGNETTE */
+        /* 1. MAIN BACKGROUND & CRT SCANLINE OVERLAY */
         body {
             background-color: #030303;
             background-image: radial-gradient(circle at center, #0a0505 0%, #000000 90%);
@@ -29,7 +33,7 @@
             position: relative;
         }
 
-        /* CRT Scanline Overlay */
+        /* CRT Screen Lines Effect */
         body::after {
             content: " ";
             display: block;
@@ -43,7 +47,7 @@
             opacity: 0.85;
         }
 
-        /* Glitch Animation on Hover */
+        /* 2. HEADER & GLITCH STYLES */
         .glitch-title {
             color: #a00000;
             letter-spacing: clamp(3px, 1.5vw, 8px);
@@ -51,7 +55,6 @@
             margin-bottom: 8px;
             font-weight: 900;
             text-shadow: 0 0 12px rgba(160, 0, 0, 0.8), 0 0 25px rgba(139, 0, 0, 0.4);
-            position: relative;
             cursor: pointer;
             transition: color 0.2s ease;
         }
@@ -79,7 +82,7 @@
             color: #888;
         }
 
-        /* 2. MOBILE POLISH & RESPONSIVE GRID */
+        /* 3. TIMER DISPLAY STYLES */
         .timer-container {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -114,15 +117,48 @@
             letter-spacing: 1px;
         }
 
+        /* 4. BUTTON SECTION STYLES (PRE-BUILT FOR FUTURE BUTTONS) */
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 30px;
+            width: 100%;
+            max-width: 550px;
+        }
+
+        .cyber-button {
+            background-color: rgba(15, 15, 15, 0.9);
+            border: 1px solid #2a2a2a;
+            border-top: 1px solid #4a1515;
+            color: #c0c0c0;
+            padding: 10px 18px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: clamp(0.7rem, 2vw, 0.8rem);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: all 0.2s ease;
+        }
+
+        .cyber-button:hover {
+            border-color: #8b0000;
+            color: #ff1a1a;
+            box-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+            background-color: rgba(25, 10, 10, 0.9);
+        }
+
+        /* 5. STATUS & EASTER EGG EFFECTS */
         .status {
-            margin-top: 45px;
+            margin-top: 35px;
             font-size: clamp(0.65rem, 2vw, 0.8rem);
             color: #7a0000;
             letter-spacing: 1.5px;
             transition: color 0.3s ease;
         }
 
-        /* EASTER EGG VISUAL SHIFTS */
         body.flash-red {
             background-color: #300000 !important;
             background-image: none !important;
@@ -131,9 +167,16 @@
 </head>
 <body id="body-target">
 
-    <h1 class="glitch-title" id="main-title">apophenia</h1>
+    <!-- =======================================================
+         SECTION 1: HEADER & TITLE
+         ======================================================= -->
+    <h1 class="glitch-title" id="main-title">SUNKCOST PROTOCOL</h1>
     <div class="subtitle" id="sub-title">IT HAS ALREADY BEGUN. ONLY THE COUNTDOWN REMAINS.</div>
 
+
+    <!-- =======================================================
+         SECTION 2: COUNTDOWN TIMER DISPLAY
+         ======================================================= -->
     <div class="timer-container">
         <div class="time-box"><div class="number" id="days">00</div><div class="label">Days</div></div>
         <div class="time-box"><div class="number" id="hours">00</div><div class="label">Hours</div></div>
@@ -141,13 +184,29 @@
         <div class="time-box"><div class="number" id="seconds">00</div><div class="label">Seconds</div></div>
     </div>
 
+
+    <!-- =======================================================
+         SECTION 3: ACTION BUTTONS (ADD YOUR NEW BUTTONS HERE!)
+         ======================================================= -->
+    <div class="button-container">
+        <!-- FUTURE BUTTONS GO HERE -->
+    </div>
+
+
+    <!-- =======================================================
+         SECTION 4: SYSTEM STATUS / MESSAGES
+         ======================================================= -->
     <div class="status" id="status-text">SYNCHRONIZING WITH SYSTEM CLOCK...</div>
 
+
+    <!-- =======================================================
+         JAVASCRIPT LOGIC - TIMER SYNC & EASTER EGGS
+         ======================================================= -->
     <script>
         let targetTime = 0;
         let timeOffset = 0;
 
-        // API Sync Function
+        // Fetch timer from serverless backend API
         async function initTimer() {
             try {
                 const res = await fetch('/api/time');
@@ -164,6 +223,7 @@
             }
         }
 
+        // Ticking timer math
         function updateTimer() {
             if (!targetTime) return;
 
@@ -192,7 +252,7 @@
 
         initTimer();
 
-        // 3. EASTER EGG KEYSTROKE LISTENER
+        // Keystroke listener for easter eggs
         let inputBuffer = "";
         const secrets = {
             "TRUTH": () => triggerEasterEgg("TRUTH DETECTED: THERE IS NO ESCAPE", true),
