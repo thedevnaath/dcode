@@ -153,29 +153,85 @@
             margin-bottom: 12px;
         }
 
-        /* CONNECTED NODES (A0) ------- (A1) */
+        /* CONNECTED LEVEL PROGRESS BAR */
         .nodes-wrapper {
+            position: relative;
+            width: 100%;
+            height: 50px;
+            margin-bottom: 20px;
             display: flex;
+            align-items: flex-start;
+        }
+
+        .node-line-bg {
+            position: absolute;
+            top: 12px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #555555;
+            z-index: 1;
+        }
+
+        .nodes-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .node-item {
+            position: absolute;
+            top: 0;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 25px;
+        }
+
+        .node-item.pos-center {
+            left: 50%;
+        }
+
+        .node-item.pos-right {
+            left: 75%;
+        }
+
+        .node-item.pos-left {
+            left: 25%;
         }
 
         .node-circle {
-            border: 1px solid #666;
-            padding: 3px 9px;
+            border: 1px solid #666666;
+            padding: 3px 10px;
             border-radius: 12px;
             font-size: 0.75rem;
-            color: #cccccc;
             letter-spacing: 1px;
-            background: rgba(15, 15, 15, 0.8);
+            background: #120b17;
+            color: #aaaaaa;
         }
 
-        .node-connector {
-            height: 1px;
-            width: 140px;
-            background-color: #555555;
+        /* Current active level styling (Red border & text) */
+        .node-circle.current {
+            border-color: #ff1a1a;
+            color: #ff1a1a;
+            box-shadow: 0 0 8px rgba(255, 26, 26, 0.5);
+        }
+
+        /* Completed level styling (Green border & text) */
+        .node-circle.completed {
+            border-color: #00ff66;
+            color: #00ff66;
+            box-shadow: 0 0 8px rgba(0, 255, 102, 0.5);
+        }
+
+        /* Level name below active level */
+        .level-name {
+            margin-top: 5px;
+            font-size: 0.75rem;
+            color: #ff1a1a;
+            letter-spacing: 1px;
+            text-transform: lowercase;
         }
 
         /* SECONDS TIMER DISPLAY */
@@ -269,9 +325,18 @@
         <h1 class="title-apophenia">APOPHENIA</h1>
 
         <div class="nodes-wrapper">
-            <div class="node-circle">A0</div>
-            <div class="node-connector"></div>
-            <div class="node-circle">A1</div>
+            <div class="node-line-bg"></div>
+            <div class="nodes-container">
+                <!-- A0 centered (Current Level with Red Border & Name) -->
+                <div class="node-item pos-center">
+                    <div class="node-circle current">A0</div>
+                    <div class="level-name">centipede</div>
+                </div>
+                <!-- A1 at Right (Locked Level) -->
+                <div class="node-item pos-right">
+                    <div class="node-circle">A1</div>
+                </div>
+            </div>
         </div>
 
         <!-- SECONDS DISPLAY -->
