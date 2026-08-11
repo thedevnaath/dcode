@@ -156,21 +156,23 @@
         /* CONNECTED LEVEL PROGRESS BAR */
         .nodes-wrapper {
             position: relative;
-            width: 100%;
+            width: 100vw; /* Breaks out of container to span full screen */
+            left: 50%;
+            transform: translateX(-50%);
             height: 50px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: flex-start;
+            margin-bottom: 25px;
+            display: block;
         }
 
         .node-line-bg {
             position: absolute;
             top: 12px;
-            left: 0;
-            right: 0;
+            left: 50%; /* Starts exactly at A0 in the center */
+            width: 50vw; /* Extends exactly to the right edge of the screen */
             height: 1px;
             background-color: #555555;
             z-index: 1;
+            transition: left 0.8s ease-in-out, width 0.8s ease-in-out;
         }
 
         .nodes-container {
@@ -187,18 +189,19 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: left 0.8s ease-in-out; /* Smooth slide for when levels change */
         }
 
         .node-item.pos-center {
-            left: 50%;
+            left: 50%; /* Center of the screen */
         }
 
         .node-item.pos-right {
-            left: 75%;
+            left: 75%; /* Exactly between center and right edge */
         }
 
         .node-item.pos-left {
-            left: 25%;
+            left: 25%; /* Where A0 will move to when solved */
         }
 
         .node-circle {
@@ -209,6 +212,7 @@
             letter-spacing: 1px;
             background: #120b17;
             color: #aaaaaa;
+            transition: all 0.5s ease;
         }
 
         /* Current active level styling (Red border & text) */
@@ -232,6 +236,7 @@
             color: #ff1a1a;
             letter-spacing: 1px;
             text-transform: lowercase;
+            transition: color 0.5s ease;
         }
 
         /* SECONDS TIMER DISPLAY */
