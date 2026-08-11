@@ -156,9 +156,8 @@
         /* CONNECTED LEVEL PROGRESS BAR */
         .nodes-wrapper {
             position: relative;
-            width: 100vw; /* Breaks out of container to span full screen */
-            left: 50%;
-            transform: translateX(-50%);
+            width: 100vw;
+            margin-left: calc(-50vw + 50%); /* Perfectly breaks out of container to center on any device */
             height: 50px;
             margin-bottom: 25px;
             display: block;
@@ -167,12 +166,12 @@
         .node-line-bg {
             position: absolute;
             top: 12px;
-            left: 50%; /* Starts exactly at A0 in the center */
-            width: 50vw; /* Extends exactly to the right edge of the screen */
+            left: 50%; /* Starts exactly at A0 in the center, nothing on the left */
+            width: 100vw; /* Extends infinitely to the right so an end is never visible */
             height: 1px;
             background-color: #555555;
             z-index: 1;
-            transition: left 0.8s ease-in-out, width 0.8s ease-in-out;
+            transition: left 0.8s ease-in-out;
         }
 
         .nodes-container {
@@ -193,11 +192,11 @@
         }
 
         .node-item.pos-center {
-            left: 50%; /* Center of the screen */
+            left: 50%; /* Exact center of the screen */
         }
 
         .node-item.pos-right {
-            left: 75%; /* Exactly between center and right edge */
+            left: 75%; /* Exactly centered between A0 and the right screen edge */
         }
 
         .node-item.pos-left {
