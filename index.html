@@ -156,18 +156,16 @@
         /* CONNECTED LEVEL PROGRESS BAR */
         .nodes-wrapper {
             position: relative;
-            width: 100vw;
-            margin-left: calc(-50vw + 50%); /* Perfectly breaks out of container to center on any device */
+            width: 100%; /* Reverted: Back to respecting our centered container */
             height: 50px;
             margin-bottom: 25px;
-            display: block;
         }
 
         .node-line-bg {
             position: absolute;
             top: 12px;
-            left: 50%; /* Starts exactly at A0 in the center, nothing on the left */
-            width: 100vw; /* Extends infinitely to the right so an end is never visible */
+            left: 50%; /* Originates perfectly behind A0 */
+            width: 50vw; /* Shoots exactly to the edge of the screen */
             height: 1px;
             background-color: #555555;
             z-index: 1;
@@ -175,7 +173,7 @@
         }
 
         .nodes-container {
-            position: relative;
+            position: absolute;
             width: 100%;
             height: 100%;
             z-index: 2;
@@ -192,15 +190,15 @@
         }
 
         .node-item.pos-center {
-            left: 50%; /* Exact center of the screen */
+            left: 50%; /* Anchors perfectly to the center of the UI stack */
         }
 
         .node-item.pos-right {
-            left: 75%; /* Exactly centered between A0 and the right screen edge */
+            left: calc(50% + 25vw); /* Exactly halfway between center and right screen edge */
         }
 
         .node-item.pos-left {
-            left: 25%; /* Where A0 will move to when solved */
+            left: calc(50% - 25vw); /* Exactly halfway between center and left screen edge */
         }
 
         .node-circle {
