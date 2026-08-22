@@ -116,6 +116,39 @@
             box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
         }
 
+        /* HALL OF FAME DIAMOND NODE */
+        .corner-top-diamond {
+            position: fixed;
+            top: 25px;
+            right: 80px; /* Positions it exactly to the left of the ? button */
+            width: 30px;
+            height: 30px;
+            border: 1px solid #666;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+
+        .corner-top-diamond:hover {
+            border-color: #ff1a1a;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+        }
+
+        .corner-top-diamond svg {
+            width: 10px;
+            height: 10px;
+            fill: #cccccc;
+            transition: fill 0.2s ease;
+        }
+
+        .corner-top-diamond:hover svg {
+            fill: #ff1a1a;
+        }
+        
         /* 4. MAIN CENTER STACK */
         .main-center-stack {
             position: relative;
@@ -317,6 +350,11 @@
     <!-- 2. TOP RIGHT: HELP NODE -->
     <div class="corner-top-right" onclick="alert('DECODE THE 12-DIGIT SEQUENCE.')">?</div>
 
+    <!-- HALL OF FAME NODE (DIAMOND) -->
+    <div class="corner-top-diamond" onclick="window.location.href='hall-of-fame.html'">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 12l10 10 10-10L12 2z"/></svg>
+    </div>
+    
     <!-- MAIN HERO SCREEN (TAKES 100% OF SCREEN HEIGHT) -->
     <div class="hero-screen">
         <!-- SMOKE EFFECT BACKGROUND CONTAINER -->
