@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>apophenia // hall of fame</title>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        /* EXACT THEME MATCH */
+        body {
+            background-color: #120b17;
+            color: #d0d0d0;
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 20px 40px 20px;
+            position: relative;
+        }
+
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 99;
+            background-size: 100% 3px, 6px 100%;
+            pointer-events: none;
+            opacity: 0.85;
+        }
+
+        /* BACK BUTTON */
+        .corner-top-left {
+            position: fixed;
+            top: 25px;
+            left: 35px;
+            font-size: 0.85rem;
+            color: #aaaaaa;
+            letter-spacing: 1px;
+            z-index: 100;
+            cursor: pointer;
+            text-decoration: none;
+            border: 1px solid #333;
+            padding: 5px 12px;
+            border-radius: 2px;
+            transition: all 0.2s ease;
+            background: rgba(10, 10, 10, 0.8);
+        }
+
+        .corner-top-left:hover {
+            border-color: #ff1a1a;
+            color: #ff1a1a;
+            box-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+        }
+
+        /* TITLE */
+        .title-apophenia {
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            font-weight: 500;
+            letter-spacing: 8px;
+            color: #e0e0e0;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            z-index: 10;
+        }
+
+        /* TABLE CONTAINER */
+        .table-wrapper {
+            width: 100%;
+            max-width: 900px;
+            z-index: 10;
+            overflow-x: auto;
+            border: 1px solid #333333;
+            border-top: 1px solid #4a1515;
+            background-color: rgba(10, 10, 10, 0.85);
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.9);
+            border-radius: 2px;
+        }
+
+        /* CUSTOM SCROLLBAR FOR TABLE */
+        .table-wrapper::-webkit-scrollbar { height: 6px; }
+        .table-wrapper::-webkit-scrollbar-track { background: #0a0a0a; }
+        .table-wrapper::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        .table-wrapper::-webkit-scrollbar-thumb:hover { background: #8b0000; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            min-width: 600px; /* Forces scroll on small phones to preserve layout */
+        }
+
+        th, td {
+            padding: 18px 25px;
+            border-bottom: 1px solid #222;
+        }
+
+        th {
+            color: #ff1a1a;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #4a1515;
+            text-transform: uppercase;
+        }
+
+        td {
+            font-size: 0.9rem;
+            color: #cccccc;
+            line-height: 1.5;
+        }
+
+        /* SPECIFIC COLUMN STYLES */
+        .col-operative {
+            color: #00ff66; /* Gives the winner's name a distinct success color */
+            font-weight: bold;
+            letter-spacing: 1px;
+            width: 25%;
+        }
+
+        .col-timestamp {
+            color: #777777;
+            font-size: 0.8rem;
+            width: 20%;
+        }
+
+        .col-transmission {
+            color: #aaaaaa;
+            width: 55%;
+        }
+
+        tr:hover td {
+            background-color: rgba(20, 15, 15, 0.9);
+        }
+
+        /* EMPTY STATE / LOADING */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #555;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BACK BUTTON -->
+    <a href="index.html" class="corner-top-left">< RETURN</a>
+
+    <h1 class="title-apophenia">HALL OF FAME</h1>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Operative</th>
+                    <th>Timestamp</th>
+                    <th>Transmission</th>
+                </tr>
+            </thead>
+            <tbody id="fame-data">
+                
+                <!-- PLACEHOLDER ROWS (To be replaced by Cloudflare Server logic) -->
+                <tr>
+                    <td class="col-operative">NIGHTHAWK</td>
+                    <td class="col-timestamp">2026.10.15 23:42</td>
+                    <td class="col-transmission">The cipher is a mirror. It only reflects what you fear.</td>
+                </tr>
+                <tr>
+                    <td class="col-operative">GHOST_IN_THE_WIRE</td>
+                    <td class="col-timestamp">2026.11.02 03:11</td>
+                    <td class="col-transmission">Don't trust the third node.</td>
+                </tr>
+                
+                <!-- Uncomment below if table is empty -->
+                <!--
+                <tr>
+                    <td colspan="3" class="empty-state">NO RECORDS FOUND // DATABASE EMPTY</td>
+                </tr>
+                -->
+                
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
