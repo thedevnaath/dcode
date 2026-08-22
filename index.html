@@ -55,7 +55,7 @@
 
         /* 2. EXACT CODEPEN CSS SMOKE EFFECT BACKGROUND */
         .smoke-container {
-            position: fixed;
+            position: absolute;
             width: 500px;
             height: 500px;
             top: 50%;
@@ -335,17 +335,16 @@
         </filter>
     </svg>
 
-    <!-- SMOKE EFFECT BACKGROUND CONTAINER -->
-    <div class="smoke-container" id="smoke-box"></div>
-
     <!-- 1. TOP LEFT: ONLINE COUNTER -->
     <div class="corner-top-left" id="online-counter">106 Online</div>
 
     <!-- 2. TOP RIGHT: HELP NODE -->
     <div class="corner-top-right" onclick="alert('DECODE THE 12-DIGIT SEQUENCE.')">?</div>
 
-    <!-- 3. BOTTOM LEFT: METADATA BOX -->
+    <!-- MAIN HERO SCREEN (TAKES 100% OF SCREEN HEIGHT) -->
     <div class="hero-screen">
+        <!-- SMOKE EFFECT BACKGROUND CONTAINER -->
+        <div class="smoke-container" id="smoke-box"></div>
 
     <!-- 4. CENTER MAIN TERMINAL STACK -->
     <div class="main-center-stack">
