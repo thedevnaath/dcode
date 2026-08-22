@@ -264,7 +264,31 @@
             color: #888888;
             letter-spacing: 1px;
         }
+        
+        /* DYNAMIC CLUE BOX */
+        .clue-box {
+            width: 100%;
+            max-width: 320px; /* Keeps it a nice square on desktop, scales down on mobile */
+            aspect-ratio: 1 / 1; /* Forces perfect square by default */
+            background-color: #000000;
+            border: 1px solid #555555;
+            margin: 25px auto 10px auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Centers content vertically */
+            align-items: center; /* Centers content horizontally */
+            padding: 15px;
+            color: #aaaaaa;
+            border-radius: 2px;
+        }
 
+        /* Ensures media fits inside and allows the box to expand downwards if needed */
+        .clue-box img, .clue-box video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 2px;
+        }
+        
         .status-bar {
             margin-top: 20px;
             font-size: 0.75rem;
@@ -339,7 +363,11 @@
 
         <!-- SUBTEXT ATTEMPTS -->
         <div class="attempts-subtext" id="attempts-text">you have 3 attempts today</div>
-
+        <!-- DYNAMIC CLUE BOX (Data fetched from Cloudflare) -->
+        <div class="clue-box" id="clue-box">
+            <!-- Server content will inject here. Placeholder text for now: -->
+            <div style="font-size: 0.8rem; letter-spacing: 1px; color: #555;">[ AWAITING DATA ]</div>
+        </div>
     <!-- CLUE VAULT -->
     <div class="clue-vault">
         <div class="clue-text">
