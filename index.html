@@ -260,6 +260,19 @@
             letter-spacing: 6px;
             margin-bottom: 20px;
             font-family: monospace;
+            /* Prevents text highlighting and context menus on mobile long-press */
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            cursor: pointer;
+        }
+
+        /* HAND COUNTDOWN IMAGES */
+        .hand-digit {
+            height: 1em; /* Matches the image height perfectly to the text font-size */
+            width: auto;
+            vertical-align: middle;
+            pointer-events: none; /* Prevents the user from accidentally dragging the image */
         }
 
         /* 12 INPUT CODE BOXES */
@@ -434,6 +447,19 @@
         let targetTime = 0;
         let timeOffset = 0;
         let remainingAttempts = 3;
+        
+        // Long-Press Image Mechanic Variables
+        const secondsDisplay = document.getElementById('seconds-display');
+        let isLongPressActive = false;
+        let pressTimer;
+
+        // Preload hand images so they load instantly without flickering
+        const preloadedHands = [];
+        for (let i = 0; i <= 9; i++) {
+            const img = new Image();
+            img.src = `hand/${i}.png`;
+            preloadedHands.push(img);
+        }
 
         async function fetchServerState() {
             try {
@@ -460,14 +486,57 @@
             const diff = targetTime - now;
 
             if (diff <= 0) {
-                document.getElementById('seconds-display').innerText = "0";
+                secondsDisplay.innerText = "0";
                 document.getElementById('status-text').innerText = "null state reached.";
                 return;
             }
 
             const totalSeconds = Math.floor(diff / 1000);
-            document.getElementById('seconds-display').innerText = totalSeconds.toString();
+            
+            if (isLongPressActive) {
+                // Get the very last digit of the current total seconds
+                const singleDigit = totalSeconds % 10;
+                // Render the corresponding hand image
+                secondsDisplay.innerHTML = `<img src="hand/${singleDigit}.png" class="hand-digit" alt="${singleDigit}">`;
+            } else {
+                // Render standard text
+                secondsDisplay.innerText = totalSeconds.toString();
+            }
         }
+
+        // Long-Press Event Functions
+        function startPress(e) {
+            // Ignore right-clicks on desktop
+            if (e.type === 'mousedown' && e.button !== 0) return; 
+            
+            pressTimer = setTimeout(() => {
+                isLongPressActive = true;
+                updateTimer(); // Instantly update to show image
+                // Small tactile vibration if the mobile device supports it
+                if (navigator.vibrate) navigator.vibrate(50);
+            }, 500); // Triggers after holding for 500ms
+        }
+
+        function cancelPress() {
+            clearTimeout(pressTimer);
+            if (isLongPressActive) {
+                isLongPressActive = false;
+                updateTimer(); // Instantly revert to text
+            }
+        }
+
+        // Prevent mobile context menu popup over the timer
+        secondsDisplay.addEventListener('contextmenu', (e) => { e.preventDefault(); });
+
+        // Touch events (Mobile)
+        secondsDisplay.addEventListener('touchstart', startPress, {passive: true});
+        secondsDisplay.addEventListener('touchend', cancelPress);
+        secondsDisplay.addEventListener('touchcancel', cancelPress);
+
+        // Mouse events (Desktop testing)
+        secondsDisplay.addEventListener('mousedown', startPress);
+        secondsDisplay.addEventListener('mouseup', cancelPress);
+        secondsDisplay.addEventListener('mouseleave', cancelPress);
 
         fetchServerState();
         setInterval(updateTimer, 1000);
