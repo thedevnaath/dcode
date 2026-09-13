@@ -484,6 +484,7 @@
 
             const now = Date.now() + timeOffset;
             const diff = targetTime - now;
+            const secondsDisplay = document.getElementById('seconds-display');
 
             if (diff <= 0) {
                 secondsDisplay.innerText = "0";
@@ -493,13 +494,16 @@
 
             const totalSeconds = Math.floor(diff / 1000);
             
+            // --- RENDER LOGIC (TEXT OR HAND IMAGES) ---
             if (isLongPressActive) {
-                // Get the very last digit of the current total seconds
-                const singleDigit = totalSeconds % 10;
-                // Render the corresponding hand image
-                secondsDisplay.innerHTML = `<img src="hand/${singleDigit}.png" class="hand-digit" alt="${singleDigit}">`;
+                // Convert total seconds to a string, then map each character to an image tag
+                const digits = totalSeconds.toString().split('');
+                const imagesHTML = digits.map(digit => 
+                    `<img src="hand/${digit}.png" class="hand-digit" alt="${digit}">`
+                ).join('');
+                
+                secondsDisplay.innerHTML = imagesHTML;
             } else {
-                // Render standard text
                 secondsDisplay.innerText = totalSeconds.toString();
             }
         }
