@@ -508,39 +508,44 @@
             }
         }
 
-        // Long-Press Event Functions
-        function startPress(e) {
-            // Ignore right-clicks on desktop
-            if (e.type === 'mousedown' && e.button !== 0) return; 
-            
+        // --- EVENT HANDLERS (HOVER FOR DESKTOP, LONG-PRESS FOR MOBILE) ---
+        const displayEl = document.getElementById('seconds-display');
+        
+        // 1. Mobile Long-Press Logic
+        function startTouch() {
             pressTimer = setTimeout(() => {
                 isLongPressActive = true;
-                updateTimer(); // Instantly update to show image
-                // Small tactile vibration if the mobile device supports it
-                if (navigator.vibrate) navigator.vibrate(50);
-            }, 500); // Triggers after holding for 500ms
+                updateTimer(); 
+                if (navigator.vibrate) navigator.vibrate(50); 
+            }, 500);
         }
 
-        function cancelPress() {
+        function cancelTouch() {
             clearTimeout(pressTimer);
             if (isLongPressActive) {
                 isLongPressActive = false;
-                updateTimer(); // Instantly revert to text
+                updateTimer(); 
             }
         }
 
-        // Prevent mobile context menu popup over the timer
-        secondsDisplay.addEventListener('contextmenu', (e) => { e.preventDefault(); });
+        displayEl.addEventListener('contextmenu', (e) => e.preventDefault());
+        displayEl.addEventListener('touchstart', startTouch, {passive: true});
+        displayEl.addEventListener('touchend', cancelTouch);
+        displayEl.addEventListener('touchcancel', cancelTouch);
 
-        // Touch events (Mobile)
-        secondsDisplay.addEventListener('touchstart', startPress, {passive: true});
-        secondsDisplay.addEventListener('touchend', cancelPress);
-        secondsDisplay.addEventListener('touchcancel', cancelPress);
-
-        // Mouse events (Desktop testing)
-        secondsDisplay.addEventListener('mousedown', startPress);
-        secondsDisplay.addEventListener('mouseup', cancelPress);
-        secondsDisplay.addEventListener('mouseleave', cancelPress);
+        // 2. Desktop Hover Logic
+        // This detects if the device uses a mouse/cursor
+        if (window.matchMedia("(hover: hover)").matches) {
+            displayEl.addEventListener('mouseenter', () => {
+                isLongPressActive = true;
+                updateTimer(); // Instantly show hands on hover
+            });
+            
+            displayEl.addEventListener('mouseleave', () => {
+                isLongPressActive = false;
+                updateTimer(); // Instantly revert to numbers when mouse leaves
+            });
+        }
 
         fetchServerState();
         setInterval(updateTimer, 1000);
