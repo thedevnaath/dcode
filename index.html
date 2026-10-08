@@ -378,26 +378,28 @@
         }
         .intro-smoke-container {
             position: absolute;
-            width: 500px;
-            height: 500px;
+            width: 400px;
+            height: 400px;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0);
+            transform: translate(-50%, -50%) scale(0.5);
             pointer-events: none;
             z-index: 10000;
-            opacity: 0;
+            opacity: 0.8;
+            will-change: transform;
         }
         .intro-smoke-container.enlarge {
             transform: translate(-50%, -50%) scale(8);
-            opacity: 0.8;
-            transition: transform 20s linear, opacity 1s ease-in;
+            opacity: 1;
+            transition: transform 20s linear;
         }
         .intro-smoke-container .c {
             border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 400px;
+            border-radius: 50%;
             position: absolute;
             margin: auto;
             top: 0; left: 0; right: 0; bottom: 0;
+            will-change: transform;
         }
     </style>
 </head>
@@ -482,19 +484,17 @@
     <script>
         // INTRO SEQUENCE LOGIC
         const introSmokeBox = document.getElementById('intro-smoke-box');
-        for (let i = 1; i <= 60; i++) {
+        for (let j = 1; j <= 30; j++) {
+            let i = j * 2;
             const circle = document.createElement('div');
             circle.className = 'c';
             const alpha = 1 - (i / 80);
-            const shadowAlpha = 1 - (i / 40);
-            circle.style.boxShadow = `3px 0px rgba(255,255,255, ${shadowAlpha}), 6px -5px rgba(10, 0, 0, ${shadowAlpha})`;
+            circle.style.boxShadow = `0 0 10px rgba(255,255,255, ${alpha * 0.5})`;
             circle.style.width = `${(i * 6)}px`;
-            circle.style.height = `${(i * 1)}px`;
-            circle.style.right = `${(i * 10)}px`;
-            circle.style.bottom = `${(i * 10)}px`;
-            circle.style.filter = `blur(${(i / 3 + 8)}px)`;
-            circle.style.transformOrigin = `${(i * 4)}px ${(i * 2)}px`;
-            circle.style.animation = `spin 3s ${(i / 10)}s linear infinite`;
+            circle.style.height = `${(i * 3)}px`;
+            circle.style.filter = `blur(${(i / 4 + 4)}px)`;
+            circle.style.transformOrigin = `center`;
+            circle.style.animation = `spin 4s ${(i / 10)}s linear infinite`;
             circle.style.background = `rgba(${(90 + i * 3)}, ${(33 + i * 1)}, 205, ${alpha})`;
             introSmokeBox.appendChild(circle);
         }
