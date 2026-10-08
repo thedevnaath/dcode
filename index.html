@@ -356,7 +356,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: opacity 2s ease-in-out;
+            transition: background-color 2.5s ease-in-out, opacity 2.5s ease-in-out;
         }
         #request-access-btn {
             padding: 15px 30px;
@@ -366,7 +366,7 @@
             color: #ff1a1a;
             border: 1px solid #ff1a1a;
             cursor: pointer;
-            z-index: 10001;
+            z-index: 10002;
             transition: all 0.3s;
             letter-spacing: 2px;
             text-transform: uppercase;
@@ -376,22 +376,38 @@
             background: rgba(255, 26, 26, 0.1);
             box-shadow: 0 0 15px rgba(255, 26, 26, 0.5);
         }
+        #entanglement-text {
+            position: absolute;
+            z-index: 10001;
+            color: #e0e0e0;
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 3s ease-in;
+        }
         .intro-smoke-container {
             position: absolute;
             width: 400px;
             height: 400px;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0.5);
+            transform: translate(-50%, -50%) scale(0);
             pointer-events: none;
             z-index: 10000;
+            opacity: 0;
+            will-change: transform, opacity;
+            transition: transform 3s ease-out, opacity 3s ease-out;
+        }
+        .intro-smoke-container.visible {
+            transform: translate(-50%, -50%) scale(0.5);
             opacity: 0.8;
-            will-change: transform;
         }
         .intro-smoke-container.enlarge {
             transform: translate(-50%, -50%) scale(8);
             opacity: 1;
-            transition: transform 20s linear;
+            transition: transform 20s linear, opacity 1s ease-in;
         }
         .intro-smoke-container .c {
             border: 2px solid rgba(255, 255, 255, 0.1);
@@ -408,6 +424,7 @@
 
     <div id="intro-overlay">
         <button id="request-access-btn">Request Access</button>
+        <div id="entanglement-text">entanglement</div>
         <div class="intro-smoke-container" id="intro-smoke-box"></div>
     </div>
 
@@ -494,26 +511,39 @@
             circle.style.height = `${(i * 3)}px`;
             circle.style.filter = `blur(${(i / 4 + 4)}px)`;
             circle.style.transformOrigin = `center`;
-            circle.style.animation = `spin 4s ${(i / 10)}s linear infinite`;
+            circle.style.animation = `spin 4s -${(i / 10)}s linear infinite`;
             circle.style.background = `rgba(${(90 + i * 3)}, ${(33 + i * 1)}, 205, ${alpha})`;
             introSmokeBox.appendChild(circle);
         }
 
+        setTimeout(() => {
+            introSmokeBox.classList.add('visible');
+        }, 100);
+
         const reqBtn = document.getElementById('request-access-btn');
         const audioEl = document.getElementById('bg-audio');
         const introOverlay = document.getElementById('intro-overlay');
+        const entanglementText = document.getElementById('entanglement-text');
 
         reqBtn.addEventListener('click', () => {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(e => console.log('Fullscreen error:', e));
+            }
             reqBtn.style.display = 'none';
+            entanglementText.style.opacity = '1';
             audioEl.play().catch(e => console.log('Audio play failed:', e));
+            introSmokeBox.classList.remove('visible');
             introSmokeBox.classList.add('enlarge');
         });
 
         audioEl.addEventListener('ended', () => {
-            introOverlay.style.opacity = '0';
+            introSmokeBox.style.transition = 'opacity 2.5s ease-in-out, transform 20s linear';
+            introSmokeBox.style.opacity = '0';
+            entanglementText.style.opacity = '0';
+            introOverlay.style.backgroundColor = 'transparent';
             setTimeout(() => {
                 introOverlay.style.display = 'none';
-            }, 2000);
+            }, 2500);
         });
         
         audioEl.addEventListener('error', () => {
@@ -537,7 +567,7 @@
             circle.style.bottom = `${(i * 10)}px`;
             circle.style.filter = `blur(${(i / 3 + 8)}px)`;
             circle.style.transformOrigin = `${(i * 4)}px ${(i * 2)}px`;
-            circle.style.animation = `spin 3s ${(i / 10)}s linear infinite`;
+            circle.style.animation = `spin 3s -${(i / 10)}s linear infinite`;
             circle.style.background = `rgba(${(90 + i * 3)}, ${(33 + i * 1)}, 205, ${alpha})`;
             
             smokeBox.appendChild(circle);
