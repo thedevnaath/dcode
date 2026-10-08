@@ -346,10 +346,68 @@
         body.flash-red {
             background-color: #300000 !important;
         }
+
+        /* INTRO OVERLAY */
+        #intro-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #120b17;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 2s ease-in-out;
+        }
+        #request-access-btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-family: 'Courier New', Courier, monospace;
+            background: rgba(18, 11, 23, 0.8);
+            color: #ff1a1a;
+            border: 1px solid #ff1a1a;
+            cursor: pointer;
+            z-index: 10001;
+            transition: all 0.3s;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            outline: none;
+        }
+        #request-access-btn:hover {
+            background: rgba(255, 26, 26, 0.1);
+            box-shadow: 0 0 15px rgba(255, 26, 26, 0.5);
+        }
+        .intro-smoke-container {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            pointer-events: none;
+            z-index: 10000;
+            opacity: 0;
+        }
+        .intro-smoke-container.enlarge {
+            transform: translate(-50%, -50%) scale(8);
+            opacity: 0.8;
+            transition: transform 20s linear, opacity 1s ease-in;
+        }
+        .intro-smoke-container .c {
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 400px;
+            position: absolute;
+            margin: auto;
+            top: 0; left: 0; right: 0; bottom: 0;
+        }
     </style>
 </head>
 <body id="body-target">
-    <audio src="accessgranted.mp3" autoplay></audio>
+    <audio id="bg-audio" src="accessgranted.mp3"></audio>
+
+    <div id="intro-overlay">
+        <button id="request-access-btn">Request Access</button>
+        <div class="intro-smoke-container" id="intro-smoke-box"></div>
+    </div>
 
     <!-- SVG BLUR FILTER FOR SMOKE -->
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" style="display:none;">
@@ -422,6 +480,47 @@
         </div>
     </div>
     <script>
+        // INTRO SEQUENCE LOGIC
+        const introSmokeBox = document.getElementById('intro-smoke-box');
+        for (let i = 1; i <= 60; i++) {
+            const circle = document.createElement('div');
+            circle.className = 'c';
+            const alpha = 1 - (i / 80);
+            const shadowAlpha = 1 - (i / 40);
+            circle.style.boxShadow = `3px 0px rgba(255,255,255, ${shadowAlpha}), 6px -5px rgba(10, 0, 0, ${shadowAlpha})`;
+            circle.style.width = `${(i * 6)}px`;
+            circle.style.height = `${(i * 1)}px`;
+            circle.style.right = `${(i * 10)}px`;
+            circle.style.bottom = `${(i * 10)}px`;
+            circle.style.filter = `blur(${(i / 3 + 8)}px)`;
+            circle.style.transformOrigin = `${(i * 4)}px ${(i * 2)}px`;
+            circle.style.animation = `spin 3s ${(i / 10)}s linear infinite`;
+            circle.style.background = `rgba(${(90 + i * 3)}, ${(33 + i * 1)}, 205, ${alpha})`;
+            introSmokeBox.appendChild(circle);
+        }
+
+        const reqBtn = document.getElementById('request-access-btn');
+        const audioEl = document.getElementById('bg-audio');
+        const introOverlay = document.getElementById('intro-overlay');
+
+        reqBtn.addEventListener('click', () => {
+            reqBtn.style.display = 'none';
+            audioEl.play().catch(e => console.log('Audio play failed:', e));
+            introSmokeBox.classList.add('enlarge');
+        });
+
+        audioEl.addEventListener('ended', () => {
+            introOverlay.style.opacity = '0';
+            setTimeout(() => {
+                introOverlay.style.display = 'none';
+            }, 2000);
+        });
+        
+        audioEl.addEventListener('error', () => {
+            // Fallback in case audio is missing or fails to load
+            introOverlay.style.display = 'none';
+        });
+
         // GENERATE THE 60-RING CODEPEN CSS SMOKE EFFECT AUTOMATICALLY
         const smokeBox = document.getElementById('smoke-box');
         for (let i = 1; i <= 60; i++) {
